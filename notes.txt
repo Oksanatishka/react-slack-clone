@@ -1,0 +1,70 @@
+Building the SLACK app:
+- React JS
+- Google User Authentication (Firebase)
+- React Context API (Redux)
+- Material UI (Icons + Make it look beautiful)
+- CSS variables
+- React Router
+- Flexbox
+- Deploy it with Firebase
+- Real-time database (Firebase)
+
+> npx create-react-app slack-clone
+Firebase Console https://console.firebase.google.com/   (Easy AWS)
+Clean unnecessary files in react start bundle.
+
+App
+    Header
+        - create component
+        - Material ui icons
+    Sidebar
+        - Material ui icons
+        - SidebarOption component
+        - Firebase -> Cloud Firestore -> Create Database -> Start in Test Mode -> Start collection -> Auto-ID, field:'name', type: 'string', value: 'youtube'
+            db: Collection > Documents > Data
+            e.g. db: 
+                    Collection: rooms      
+                        Document: jngrgJhVCnbhjvjB 
+                            Data: 
+                                collection: messages   > Document: fgadFFFGjkgfkaj > message: "Hi there!", timestamp: 24 September 2020 at 00:00:00 UTC-7, user: "Chris Bell", userImage: "..."
+                                field: name: 'general'
+            /src/firebase.js
+            > npm i firebase
+    React-Router -> Chat screen
+        > npm i react-router-dom
+        App.js: wrap in <Router>
+        create Chat component, useParams hook
+        Add Channel functionaly (in SidebarOption component)
+
+?. optional chaining - es6-es7 feature, like an instant TRY catch, add it & your app won't crash, defaults it to a safe value.
+    e.g. earlier: {message && message.text}
+         now:     {message?.text} or even nested {message?.info?.text}
+
+Google User Authentication:
+    in App.js add:
+        const [user, setUser] = useState(null);
+        {!user > (<h1>Login Page</h1>): (<> ... </>)}
+    create Login.js 
+    Firebase -> Authentication -> Sign-in method -> enable Google 
+    Refactor this piece of code to be global using React Context API: const [user, setUser] = useState(null);
+        - create files called StateProvider.js, reducer.js
+        - in index.js wrap <App/> into <StateProvider> component
+        - in App.js:
+            remove      const [user, setUser] = useState(null);
+            add         const [{user}, dispatch] = useStateValue();
+        - in Login.js 
+            add         const [state, dispatch] = useStateValue()
+            add in promise (to push user into a layer):
+                        dispatch({
+                            type: actionTypes.SET_USER,
+                            user: result.user,
+                        });
+        - in Header.js:
+            add         const [{user}] = useStateValue();
+            change      <Avatar className="header__avatar" alt={user?.displayName} src={user?.photoURL}/>
+        - in Sidebar.js:
+            add         const [{ user }] = useStateValue();     // grab the user
+            change hardcoded name to:     {user?.displayName}
+        
+    Add ChatInput component in Chat.js
+
